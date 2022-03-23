@@ -76,7 +76,7 @@ async function main() {
     console.log('Connecting nodes')
     for (var i = 0; i < N_NODES; i++) {
         const node = nodes[i]
-        for (var j = 1; j <= N_CONNECT; j += 1) {
+        for (var j = 1; j <= N_CONNECT; j++) {
             const other = nodes[(i + j) % N_NODES]
             await node.p.peerStore.addressBook.set(other.p.peerId, other.p.multiaddrs)
             await node.p.dial(other.p.peerId)
