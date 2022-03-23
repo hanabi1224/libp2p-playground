@@ -1,0 +1,6 @@
+{
+  "packages": [
+    "perf/js/*"
+  ],
+  "version": "0.0.0"
+}
