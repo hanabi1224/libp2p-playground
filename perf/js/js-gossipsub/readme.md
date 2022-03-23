@@ -3,10 +3,10 @@
 ```
 yarn
 yarn build
-# 10 nodes
-yarn main 10
-# 100 nodes
-yarn main 100
+# 10 nodes, each has 4x2=6 connections
+yarn main 10 4
+# 100 nodes, each has 3x2=6 connections
+yarn main 100 3
 # Run node profiler
 yarn prof 10
 # Generate aggregated profiler report
@@ -18,7 +18,7 @@ node --prof-process isolate-0xblabla > perf.log
 # Output
 
 ```
-N_NODES: 100
+N_NODES: 100, N_CONNECT: 3
 [100] node 93 msg latency, avg: 3502.252525252525ms, max: 4642ms, min: 211ms
 [99] node 83 msg latency, avg: 3205.4444444444443ms, max: 5300ms, min: 204ms
 [98] node 84 msg latency, avg: 3238.6666666666665ms, max: 5307ms, min: 204ms
@@ -44,7 +44,7 @@ N_NODES: 100
 ```
 
 ```
-N_NODES: 10
+N_NODES: 10, N_CONNECT: 3
 [10] node 7 msg latency, avg: 66.55555555555556ms, max: 81ms, min: 41ms
 [9] node 8 msg latency, avg: 73.11111111111111ms, max: 90ms, min: 23ms
 [8] node 9 msg latency, avg: 88.22222222222223ms, max: 105ms, min: 25ms

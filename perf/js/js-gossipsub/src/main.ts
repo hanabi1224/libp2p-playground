@@ -3,7 +3,7 @@ import { createPeer, P2PNode, uint8ArrayFromString, uint8ArrayToString } from ".
 
 // number of nodes
 const N_NODES = +process.argv[2] || 10
-const N_CONNECT = 2
+const N_CONNECT = +process.argv[3] || 3
 // Prints message on peer discovery
 const DISCOVERY_HOOK = false
 // Print message payload on recieve
@@ -58,10 +58,11 @@ function subscribeTopic(node: P2PNode) {
 }
 
 async function main() {
-    console.log(`N_NODES: ${N_NODES}`)
+    console.log(`N_NODES: ${N_NODES}, N_CONNECT: ${N_CONNECT}`)
     const nodes: P2PNode[] = []
     const id2Nodes = new Map<String, P2PNode>()
     // Create nodes
+    console.log('Creating nodes')
     for (var i = 0; i < N_NODES; i++) {
         const node = await createPeer(i)
         nodes.push(node)
@@ -72,6 +73,7 @@ async function main() {
         subscribeTopic(node)
     }
     // Connect nodes
+    console.log('Connecting nodes')
     for (var i = 0; i < N_NODES; i++) {
         const node = nodes[i]
         for (var j = 1; j <= N_CONNECT; j += 1) {
@@ -80,6 +82,7 @@ async function main() {
             await node.p.dial(other.p.peerId)
         }
     }
+    console.log('Starting pubsub')
     for (var i = 0; i < N_NODES; i++) {
         const node = nodes[i]
         node.p.pubsub.publish(TOPIC, uint8ArrayFromString(JSON.stringify({
