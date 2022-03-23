@@ -1,12 +1,18 @@
 import PeerId from 'peer-id'
 import { createPeer, P2PNode, uint8ArrayFromString, uint8ArrayToString } from "./utils"
 
-const DISCOVERY_HOOK = true
-const TOPIC = 'news'
 // number of nodes
-const N_NODES = 100
+const N_NODES = +process.argv[2] || 10
 const N_CONNECT = 2
-const ID_SUM = N_NODES * (N_NODES - 1) / 2
+// Prints message on peer discovery
+const DISCOVERY_HOOK = false
+// Print message payload on recieve
+const PRINT_RECEIVED_MSG = false
+// Print average message latency
+const PRINT_AVG_LATENCY = true
+const TOPIC = 'news'
+
+var nLeft = N_NODES
 
 interface Payload {
     // From node index
@@ -20,16 +26,39 @@ function setOnDiscoveryHook(node: P2PNode, id2Nodes: Map<String, P2PNode>) {
 }
 
 function subscribeTopic(node: P2PNode) {
+    var minLatency = 0
+    var maxLatency = 0
+    var totalMS = 0
+    var totalMsg = 0
     node.p.pubsub.on(TOPIC, (msg) => {
         const ts = new Date().getTime()
         const payloadStr = uint8ArrayToString(msg.data)
         const payload: Payload = JSON.parse(payloadStr)
-        console.log(`node ${node.index} received: ${uint8ArrayToString(msg.data)} at ${ts}, duration ${ts - payload.ts}ms`)
+        const latency = ts - payload.ts
+        if (minLatency == 0 || minLatency > latency) {
+            minLatency = latency
+        }
+        if (maxLatency == 0 || maxLatency < latency) {
+            maxLatency = latency
+        }
+        totalMS += latency
+        totalMsg += 1
+        if (PRINT_RECEIVED_MSG) {
+            console.log(`node ${node.index} received: ${uint8ArrayToString(msg.data)} at ${ts}, latency ${latency}ms`)
+        }
+        if (PRINT_AVG_LATENCY && totalMsg == N_NODES - 1) {
+            console.log(`[${nLeft}] node ${node.index} msg latency, avg: ${totalMS / totalMsg}ms, max: ${maxLatency}ms, min: ${minLatency}ms`)
+            nLeft -= 1
+            if (nLeft == 0) {
+                process.exit(0)
+            }
+        }
     })
     node.p.pubsub.subscribe(TOPIC)
 }
 
 async function main() {
+    console.log(`N_NODES: ${N_NODES}`)
     const nodes: P2PNode[] = []
     const id2Nodes = new Map<String, P2PNode>()
     // Create nodes

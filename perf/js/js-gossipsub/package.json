@@ -5,7 +5,8 @@
 	"private": true,
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json",
-		"main": "yarn build && node dist/main.js"
+		"main": "yarn build && node dist/main.js",
+		"prof": "yarn build && node --prof dist/main.js"
 	},
 	"dependencies": {
 		"@chainsafe/libp2p-noise": "^5.0.3",
