@@ -27,7 +27,6 @@ var (
 
 func main() {
 	nArgs := len(os.Args)
-	println(nArgs)
 	if nArgs > 1 {
 		if n, err := strconv.Atoi(os.Args[1]); err == nil {
 			N_NODES = n
