@@ -40,7 +40,7 @@ func (n *P2PNode) readLoop() {
 	for {
 		msg, err := n.sub.Next(CTX)
 		if err != nil {
-			fmt.Fprint(os.Stderr, err)
+			printErr(err)
 			return
 		}
 		if msg == nil || msg.ReceivedFrom == n.host.ID() {
@@ -88,4 +88,8 @@ func createPeer(index int) P2PNode {
 	}
 	node := P2PNode{host: h, index: index, ps: ps, topic: topic, sub: sub}
 	return node
+}
+
+func printErr(err error) {
+	fmt.Fprint(os.Stderr, err)
 }

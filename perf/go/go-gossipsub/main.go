@@ -55,11 +55,12 @@ func main() {
 			node.host.Peerstore().AddAddrs(other.host.ID(), other.host.Addrs(), peerstore.PermanentAddrTTL)
 			err := node.host.Connect(CTX, peer.AddrInfo{ID: other.host.ID(), Addrs: other.host.Addrs()})
 			if err != nil {
-				fmt.Fprint(os.Stderr, err)
+				printErr(err)
 			}
 		}
 	}
 	time.Sleep(1 * time.Second)
+	println("Starting pubsub")
 	for _, node := range nodes {
 		go node.readLoop()
 		node.publishMessage()
