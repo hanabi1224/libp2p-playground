@@ -3,7 +3,7 @@
 ```
 yarn
 yarn build
-# 10 nodes, each has 4x2=6 connections
+# 10 nodes, each has 4x2=8 connections
 yarn main 10 4
 # 100 nodes, each has 3x2=6 connections
 yarn main 100 3
